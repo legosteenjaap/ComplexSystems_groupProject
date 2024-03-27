@@ -148,8 +148,8 @@ if __name__ == "__main__":
     
 
     #choose which method (sparse or non sparse [nonsparse seems to be faster...])
-    # eigenvalues, time = eigenvalues_non_sparse(depth=depth, split_rate=split_rate)
-    eigenvalues, time = eigenvalues_sparse(depth=depth, split_rate=split_rate)
+    eigenvalues, time = eigenvalues_non_sparse(depth=depth, split_rate=split_rate)
+    # eigenvalues, time = eigenvalues_sparse(depth=depth, split_rate=split_rate)
 
     print(f"Time passed: {time}")
     print(f"Eigenvalues: (amount: {len(eigenvalues)})")
