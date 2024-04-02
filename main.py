@@ -131,6 +131,27 @@ def eigenvalues_non_sparse(split_rate, depth):
 
     return eigenvalues, diff_time
 
+# (be cautious choosing values bigger than 10, for split rate 3)
+def calc_and_safe_data(depth_beginning, depth_end, split_rate):
+
+    for depth in range(depth_beginning, depth_end + 1): #(is +1 correct?)
+        #choose which method (sparse or non sparse [nonsparse seems to be faster...])
+        eigenvalues, time = eigenvalues_non_sparse(depth=depth, split_rate=split_rate)
+        # eigenvalues, time = eigenvalues_sparse(depth=depth, split_rate=split_rate)
+    
+        print(f"current_settings, split_rate={split_rate}, depth={depth}")
+        print(f"Time passed: {time}")
+        print(f"Eigenvalues: (amount: {len(eigenvalues)})")
+        # print(eigenvalues)
+
+        #WARNING: I convert here numpy array to real part of array
+        #I beleave there is no complex part and this should be fine.
+        #I do this because of very small errors convert the real numbers in to complex.
+        eigenvalues = np.real(eigenvalues)
+
+        #safe file here (you need to run the code from the project root)
+        np.savetxt(f"data/eigenvalues_split_{split_rate}_depth_{depth}.txt", eigenvalues)
+
 
 
 if __name__ == "__main__":
@@ -141,19 +162,18 @@ if __name__ == "__main__":
     # temp_matrix = temp_matrix.todense()
     
     print("Strating Complex Systems group project (rivers)")
+    print("The main file now only generates data files.")
 
-    #Set variables
-    depth = 6  #(be cautious choosing values bigger than 10)
-    split_rate = 3
+    #test data generation (later remove this part)
+    # calc_and_safe_data(4, 6, 3)
+
+    #data generation (later uncomment this part)
+    calc_and_safe_data(10, 14, 2)
+    calc_and_safe_data(4, 13, 3)
+    calc_and_safe_data(4, 8, 4)
+    calc_and_safe_data(4, 5, 5)
     
 
-    #choose which method (sparse or non sparse [nonsparse seems to be faster...])
-    eigenvalues, time = eigenvalues_non_sparse(depth=depth, split_rate=split_rate)
-    # eigenvalues, time = eigenvalues_sparse(depth=depth, split_rate=split_rate)
-
-    print(f"Time passed: {time}")
-    print(f"Eigenvalues: (amount: {len(eigenvalues)})")
-    print(eigenvalues)
 
 
     #make plots
@@ -162,10 +182,10 @@ if __name__ == "__main__":
     # plt.show()
     
     # show eigenvalues (sorted)
-    eigenvalues.sort()
-    plt.plot(eigenvalues)
-    plt.ylabel("eigenvalues")
-    plt.show()
+    # eigenvalues.sort()
+    # plt.plot(eigenvalues)
+    # plt.ylabel("eigenvalues")
+    # plt.show()
 
     #show table with sizes
     # show_sizes(20)
