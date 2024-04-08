@@ -3,6 +3,7 @@ import scipy
 from scipy import sparse
 import matplotlib.pyplot as plt
 import time
+import os
 
 """
 Python script for Complex Systems group project (rivers)    
@@ -150,6 +151,7 @@ def calc_and_safe_data(depth_beginning, depth_end, split_rate):
         eigenvalues = np.real(eigenvalues)
 
         #safe file here (you need to run the code from the project root)
+        if not os.path.exists("data"): os.mkdir("data")
         np.savetxt(f"data/eigenvalues_split_{split_rate}_depth_{depth}.txt", eigenvalues)
 
 

@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import time
 import pathlib
 import re
+import os
 
 dpi_setting = 150
 
@@ -37,6 +38,7 @@ if __name__ == "__main__":
     temp_matrix2 = main.generate_bidirectional_matrix_np_version(split_rate=4, depth=2)
     plt.figure(dpi=dpi_setting)
     plt.spy(temp_matrix1)
+    if not os.path.exists("graphs"): os.mkdir("graphs")
     plt.savefig("graphs/matrix_layout1.png")
     plt.figure(dpi=dpi_setting)
     plt.spy(temp_matrix2)
@@ -58,6 +60,7 @@ if __name__ == "__main__":
         plt.ylabel("amount of eigenvalue")
         plt.xlabel("eigenvalues")
         plt.savefig(f"graphs/hist_plot_split_{split_rate}_depth_{depth}.png")
+
         #dubbel bins (for now disabled)
         # plt.figure(dpi=dpi_setting)
         # plt.hist(eigenvalues, bins=dubbel_bins)
