@@ -4,9 +4,11 @@ from scipy import sparse
 def get_amount_of_nodes(degree, depth):
     """Calculates the amount of nodes for the cayley tree with the given degree and depth"""
     if depth < 0:
-        return 0
+        #Otherwise the code crashes when generating a tree with depth 0
+        return 0 
     elif depth == 0:
-        return 1 #Single node
+        #If the depth is zero we only have one center node
+        return 1
     elif depth == 1:
         return 1 + degree 
     else:
@@ -18,12 +20,12 @@ def get_amount_of_nodes(degree, depth):
             matrix_size += next_layer_nodes
         return matrix_size
 
-def fill_non_sparse_matrix(matrix, row_pos, column_pos):
+def fill_normal_matrix(matrix, row_pos, column_pos):
     """Stores the data on a normal matrix"""
     matrix[row_pos, column_pos] = 1
 
 class SparseData:
-    """Simple class for storing sparse matrix data"""
+    """Simple class for storing sparse matrix data temporarely"""
 
     def __init__(self, matrix_size):
         self.row_positions = np.zeros(matrix_size - 1)
@@ -43,28 +45,34 @@ class SparseData:
         self.index +=1
 
 
-def fill_sparse_matrix(sparse_matrix : SparseData, row_pos, column_pos):
+def fill_special_sparse_matrix(sparse_matrix : SparseData, row_pos, column_pos):
     """Stores the data for the special data structure which can hold sparse matrices"""
     sparse_matrix.row_positions[sparse_matrix.get_index()] = row_pos
     sparse_matrix.column_positions[sparse_matrix.get_index()] = column_pos
     sparse_matrix.increment_index()
 
-def create_matrix(matrix_size, is_sparse):
+def finalize_special_sparse_matrix(sparse_matrix: SparseData, matrix_size):
+    """Converts the SparseData to a sparse matrix from the scipy module"""
+    data = np.ones(matrix_size - 1)
+    return sparse.coo_matrix((data, (sparse_matrix.get_row_positions(), sparse_matrix.get_column_positions())), shape=(matrix_size, matrix_size))
+
+def initialize_matrix(matrix_size, is_sparse):
     """Initializes cayley tree matrix"""
 
     if is_sparse:
-        fill_function = fill_sparse_matrix
+        fill_function = fill_special_sparse_matrix
 
         matrix = SparseData(matrix_size)
     else:
-        fill_function = fill_non_sparse_matrix
+        fill_function = fill_normal_matrix
 
         matrix = np.zeros((matrix_size, matrix_size))
 
     return matrix, fill_function
 
 def fill_matrix(matrix, fill_function, degree, depth):
-    """Fills the adjacency matrix with the data for the cayley tree"""
+    """Fills the adjacency matrix with the data for the cayley tree
+        Note: To understand this algorithm run the file called \"visualize_matrix.py\" to see a visual representation of the generated matrix"""
 
     #Amount of nodes that aren't on the outside of the tree a.k.a non leaf nodes
     non_leaf_node_amount = get_amount_of_nodes(degree, depth - 1)
@@ -93,13 +101,12 @@ def generate(degree=3, depth=10, is_sparse=False, is_bi_directional=True):
     
     matrix_size = get_amount_of_nodes(degree, depth)
 
-    matrix, fill_function = create_matrix(matrix_size, is_sparse)
+    matrix, fill_function = initialize_matrix(matrix_size, is_sparse)
 
     matrix = fill_matrix(matrix, fill_function, degree, depth)
 
     if is_sparse:
-        data = np.ones(matrix_size - 1)
-        matrix = sparse.coo_matrix((data, (matrix.get_row_positions(), matrix.get_column_positions())), shape=(matrix_size, matrix_size))
+        matrix = finalize_special_sparse_matrix(matrix, matrix_size)
 
     if is_bi_directional:
         return get_bi_directional(matrix)
