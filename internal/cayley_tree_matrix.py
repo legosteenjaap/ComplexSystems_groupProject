@@ -12,13 +12,13 @@ def get_amount_of_nodes(degree, depth):
     elif depth == 1:
         return 1 + degree 
     else:
-        matrix_size = 1 + degree
+        amount_of_nodes = 1 + degree
         next_layer_nodes = degree         
         
         for i in range(depth - 1):
             next_layer_nodes = next_layer_nodes * (degree - 1)
-            matrix_size += next_layer_nodes
-        return matrix_size
+            amount_of_nodes += next_layer_nodes
+        return amount_of_nodes
 
 def fill_normal_matrix(matrix, row_pos, column_pos):
     """Stores the data on a normal matrix"""
