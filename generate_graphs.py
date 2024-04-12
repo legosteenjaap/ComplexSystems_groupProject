@@ -75,7 +75,7 @@ def calculate_gaps_range(degree):
     for depth in range (1, 7):
         matrix = cayley_tree_matrix.generate(degree=degree, depth=depth)
         
-        eigenvalues = find_eigenvalues.find_eigen_values(matrix)
+        eigenvalues = find_eigenvalues.find_eigen_values(matrix, False)
         gap, nullity = calculate_gap_and_nullity(eigenvalues)
         gaps.append(gap)
         print(f"Calculated gap for degree: {degree}, depth: {depth} with nullity: {nullity}!")

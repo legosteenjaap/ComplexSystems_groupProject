@@ -25,10 +25,10 @@ def visualize_matrix(file_name, matrix):
     plt.title(file_name)
     save(file_name)
 
-def visualize_network(file_name, matrix, node_visualization_size):
+def visualize_network(file_name, matrix, node_visualization_size, numbered_nodes):
     """Visualizes the tree network with networkx"""
     network = nx.DiGraph(matrix)
-    nx.draw(network, node_size=node_visualization_size, arrows=False, with_labels=True)
+    nx.draw(network, node_size=node_visualization_size, arrows=False, with_labels=numbered_nodes)
     plt.title(file_name)
     save(file_name)
 
@@ -56,8 +56,9 @@ if __name__ == "__main__":
         matrix = random_spanning_tree_matrix.generate(depth)
 
     node_visualization_size = int(questions.ask("What size should the nodes be? [default:500]", questions.is_integer))
+    numbered_nodes = (questions.ask("Do you want to number the nodes?", questions.is_boolean)).lower() == "true"
 
     visualize_matrix(f"matrix_visualization_networktype_{network_type}_degree_{degree}_depth_{depth}", matrix)
-    visualize_network(f"network_visualization_networktype_{network_type}_degree_{degree}_depth_{depth}", matrix, node_visualization_size)
+    visualize_network(f"network_visualization_networktype_{network_type}_degree_{degree}_depth_{depth}", matrix, node_visualization_size, numbered_nodes)
 
     print("Succesfully saved the visualization of the matrix and network of your tree!")
